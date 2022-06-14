@@ -50,8 +50,8 @@ func TestRunCommand(t *testing.T) {
 		args        args
 		expectPanic bool
 	}{
-		{"/bin/ls", args{"/bin/ls", []string{"/"}}, false},
-		{"/bin/lsxxxxxasda", args{"/bin/lsxxxxxasda", []string{"/"}}, true},
+		{"runs ls", args{"/bin/ls", []string{"/"}}, false},
+		{"panics on no such file", args{"/lsxxxxxasda", []string{"/"}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -79,15 +79,14 @@ func TestCurrentExecutable(t *testing.T) {
 
 func TestCreateFile(t *testing.T) {
 	tests := []struct {
-		name        string
 		path        string
 		expectPanic bool
 	}{
-		{"/tmp/foo", "/tmp/foo", false},
-		{"/DoesnOTeXiST", "/DoesnOTeXiST", true},
+		{"/tmp/foo", false},
+		{"/DoesnOTeXiST", true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.path, func(t *testing.T) {
 			if tt.expectPanic {
 				assert.Panics(t, func() {
 					CreateFile(tt.path)
