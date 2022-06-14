@@ -35,8 +35,9 @@ $ ./bin/testtool < commands.json
 
 # commands.json
 
-Each command is a single line of JSON, and will trigger a specific type of
-action.
+This contains a sequence of JSON action descriptions.  Each is an object, and a blank line indicates the end of the JSON object.
+
+See `test.json` for an example.
 
 ## Files
 

@@ -44,6 +44,7 @@ func NetworkWrite(protocol string, host string, port int, data []byte) {
 	conn, err := net.DialTimeout(protocol, fmt.Sprintf("%s:%d", host, port), timeout)
 	if err != nil {
 		zap.S().Panicw("NetworkWrite",
+			"action", "NetworkWrite",
 			"error", err,
 			"protocol", protocol,
 			"host", host,
@@ -59,6 +60,7 @@ func NetworkWrite(protocol string, host string, port int, data []byte) {
 	n, err := conn.Write(data)
 	if err != nil {
 		zap.S().Panicw("NetworkWrite",
+			"action", "NetworkWrite",
 			"error", err,
 			"protocol", protocol,
 			"localAddress", localAddress,
@@ -71,6 +73,7 @@ func NetworkWrite(protocol string, host string, port int, data []byte) {
 	_ = conn.Close()
 
 	zap.S().Infow("NetworkWrite",
+		"action", "NetworkWrite",
 		"host", host,
 		"port", port,
 		"protocol", protocol,

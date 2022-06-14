@@ -1,0 +1,43 @@
+{
+    "action": "CreateFile",
+    "path": "/tmp/foo"
+}
+
+{
+    "action": "ModifyFile",
+    "path": "/tmp/foo",
+    "content": "new data."
+}
+
+{
+    "action": "ModifyFile",
+    "path": "/tmp/foo",
+    "content": "new data."
+}
+
+{
+    "action": "DeleteFile",
+    "path": "/tmp/foo"
+}
+
+{
+    "action": "RunCommand",
+    "path": "/bin/ls",
+    "args": ["/foo"]
+}
+
+{
+    "action": "NetworkWrite",
+    "protocol": "tcp",
+    "host": "blog.flame.org",
+    "port": 80,
+    "data": "this is a test"
+}
+
+{
+    "action": "NetworkWrite",
+    "protocol": "udp",
+    "host": "blog.flame.org",
+    "port": 80,
+    "data": "this is a test"
+}

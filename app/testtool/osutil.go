@@ -50,9 +50,10 @@ func RunCommand(path string, args []string) {
 	cmd := exec.Command(path, args...)
 	err := cmd.Run()
 	if err != nil && cmd.ProcessState.ExitCode() == 0 {
-		zap.S().Panicw("exec", "error", err)
+		zap.S().Panicw("RunCommand", "error", err)
 	}
-	zap.S().Infow("exec",
+	zap.S().Infow("RunCommand",
+		"action", "RunCommand",
 		"cmdPath", path,
 		"cmdArgs", args,
 		"cmdPID", cmd.ProcessState.Pid(),
@@ -77,6 +78,7 @@ func CreateFile(path string) {
 	}
 	f.Close()
 	zap.S().Infow("CreateFile",
+		"action", "CreateFile",
 		"fileAction", "create",
 		"path", path,
 	)
@@ -90,6 +92,7 @@ func DeleteFile(path string) {
 		zap.S().Panicw("DeleteFile", "error", err)
 	}
 	zap.S().Infow("DeleteFile",
+		"action", "DeleteFile",
 		"fileAction", "delete",
 		"path", path,
 	)
@@ -109,6 +112,7 @@ func ModifyFile(path string, content string) {
 		zap.S().Panicw("ModifyFile", "error", err)
 	}
 	zap.S().Infow("ModifyFile",
+		"action", "ModifyFile",
 		"fileAction", "modify",
 		"path", path,
 	)
