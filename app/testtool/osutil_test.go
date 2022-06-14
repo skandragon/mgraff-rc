@@ -53,7 +53,8 @@ func TestRunCommand(t *testing.T) {
 		expectPanic bool
 	}{
 		{"runs ls", args{"/bin/ls", []string{"/"}}, false},
-		{"panics on no such file", args{"/lsxxxxxasda", []string{"/"}}, true},
+		{"runs ls", args{"/bin/ls", []string{"/lsxxxxxasda"}}, false},
+		{"panics on no such file", args{"/lsxxxxxasda", []string{}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

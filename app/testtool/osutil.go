@@ -49,7 +49,7 @@ func CurrentExecutable() string {
 func RunCommand(path string, args []string) {
 	cmd := exec.Command(path, args...)
 	err := cmd.Run()
-	if err != nil {
+	if err != nil && cmd.ProcessState.ExitCode() == 0 {
 		zap.S().Panicw("exec", "error", err)
 	}
 	zap.S().Infow("exec",
@@ -62,9 +62,16 @@ func RunCommand(path string, args []string) {
 // CreateFile will create an empty file using the 0644 umask at
 // the specified path.  All directories need to exist prior to calling.
 // The file is not deleted automatically.
+// If the file already exists (and can be opened for reading at least)
+// this function will panic.
 // If the file cannot be created, it will panic.
 func CreateFile(path string) {
-	f, err := os.OpenFile(path, os.O_CREATE, 0644)
+	f, err := os.Open(path)
+	if err == nil {
+		f.Close()
+		zap.S().Panicw("CreateFile", "error", "file already exists")
+	}
+	f, err = os.OpenFile(path, os.O_CREATE, 0644)
 	if err != nil {
 		zap.S().Panicw("CreateFile", "error", err)
 	}
