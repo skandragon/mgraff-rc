@@ -59,16 +59,16 @@ func RunCommand(path string, args []string) {
 		"cmdExitStatus", cmd.ProcessState.ExitCode())
 }
 
-// CreateFile will create an empty file using the default umask at
+// CreateFile will create an empty file using the 0644 umask at
 // the specified path.  All directories need to exist prior to calling.
 // The file is not deleted automatically.
 // If the file cannot be created, it will panic.
 func CreateFile(path string) {
-	f, err := os.Create(path)
+	f, err := os.OpenFile(path, os.O_CREATE, 0644)
 	if err != nil {
 		zap.S().Panicw("CreateFile", "error", err)
 	}
-	defer f.Close()
+	f.Close()
 	zap.S().Infow("CreateFile",
 		"fileAction", "create",
 		"path", path,
@@ -84,6 +84,25 @@ func DeleteFile(path string) {
 	}
 	zap.S().Infow("DeleteFile",
 		"fileAction", "delete",
+		"path", path,
+	)
+}
+
+// ModifyFile will add some text to the end of a file.  The file must
+// already exist.
+// If an error occurs, it will panic.
+func ModifyFile(path string, content string) {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0)
+	if err != nil {
+		zap.S().Panicw("ModifyFile", "error", err)
+	}
+	defer f.Close()
+	_, err = f.WriteString(content)
+	if err != nil {
+		zap.S().Panicw("ModifyFile", "error", err)
+	}
+	zap.S().Infow("ModifyFile",
+		"fileAction", "modify",
 		"path", path,
 	)
 }

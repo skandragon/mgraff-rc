@@ -17,10 +17,12 @@
 package main
 
 import (
+	"io/fs"
 	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCurrentUser(t *testing.T) {
@@ -121,6 +123,49 @@ func TestDeleteFile(t *testing.T) {
 				assert.NotPanics(t, func() {
 					DeleteFile(tt.path)
 				})
+			}
+		})
+	}
+}
+
+func TestModifyFile(t *testing.T) {
+	tests := []struct {
+		path        string
+		mode        fs.FileMode
+		expectPanic bool
+	}{
+		{"/tmp/foo3", 0644, false},
+		{"/DoesnOTeXiST", 0, true},
+		{"/tmp/foo4", 0444, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			// create test file if needed
+			if tt.mode != 0 {
+				f, err := os.OpenFile(tt.path, os.O_CREATE, tt.mode)
+				require.NoError(t, err)
+				f.Close()
+			}
+
+			// run the actual test
+			if tt.expectPanic {
+				assert.Panics(t, func() {
+					ModifyFile(tt.path, "item one.")
+				})
+			} else {
+				assert.NotPanics(t, func() {
+					ModifyFile(tt.path, "item one.")
+					ModifyFile(tt.path, "item two.")
+				})
+				// check contents
+				written, err := os.ReadFile(tt.path)
+				require.NoError(t, err)
+				assert.Equal(t, "item one.item two.", string(written))
+			}
+
+			// clean up
+			if tt.mode != 0 {
+				require.NoError(t, os.Remove(tt.path))
 			}
 		})
 	}
