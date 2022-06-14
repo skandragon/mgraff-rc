@@ -19,6 +19,8 @@ package main
 import (
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCurrentUser(t *testing.T) {
@@ -36,4 +38,29 @@ func TestCurrentUser(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRunCommand(t *testing.T) {
+	type args struct {
+		path string
+		args []string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{"/bin/ls", args{"/bin/ls", []string{"/"}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			RunCommand(tt.args.path, tt.args.args)
+		})
+	}
+}
+
+func TestCurrentExecutable(t *testing.T) {
+	t.Run("returns something", func(t *testing.T) {
+		got := CurrentExecutable()
+		assert.NotEmpty(t, got)
+	})
 }

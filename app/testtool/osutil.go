@@ -17,15 +17,40 @@
 package main
 
 import (
+	"os"
+	"os/exec"
 	"os/user"
+
+	"go.uber.org/zap"
 )
 
 // CurrentUser returns a string representing the current user running this
 // process, or logs and exits if this cannot be determined.
 func CurrentUser() string {
-	u, err := user.Current()
+	n, err := user.Current()
 	if err != nil {
-		logger.Fatalf("user.Current(): %v", err)
+		zap.S().Fatalw("user.Current()", "error", err)
 	}
-	return u.Username
+	return n.Username
+}
+
+func CurrentExecutable() string {
+	n, err := os.Executable()
+	if err != nil {
+		zap.S().Fatalw("os.Executable()", "error", err)
+	}
+	return n
+}
+
+func RunCommand(path string, args []string) {
+	cmd := exec.Command(path, args...)
+	err := cmd.Run()
+	if err != nil {
+		zap.S().Fatalw("exec", "error", err)
+	}
+	zap.S().Infow("exec",
+		"cmdPath", path,
+		"cmdArgs", args,
+		"cmdPID", cmd.ProcessState.Pid(),
+		"cmdExitStatus", cmd.ProcessState.ExitCode())
 }

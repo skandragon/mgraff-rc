@@ -16,11 +16,24 @@
 
 package main
 
-import "go.uber.org/zap"
+import (
+	"log"
+	"os"
 
-func main() {
-	l := setupLogging()
-	defer l.Sync()
+	"go.uber.org/zap"
+)
 
-	zap.S().Infow("Working!")
+func setupLogging() *zap.SugaredLogger {
+	l, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("setting up zap logger: %v", err)
+	}
+	s := l.Sugar().With(
+		"processID", os.Getpid(),
+		"processUsername", CurrentUser(),
+		"processName", CurrentExecutable(),
+		"processArguments", os.Args[1:],
+	)
+	zap.ReplaceGlobals(s.Desugar())
+	return s
 }
