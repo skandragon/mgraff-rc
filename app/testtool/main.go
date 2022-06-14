@@ -29,4 +29,7 @@ func main() {
 	ModifyFile("/tmp/foo", "item two.")
 	DeleteFile("/tmp/foo")
 	RunCommand("/bin/ls", []string{"/foo"})
+
+	NetworkWrite("tcp", "blog.flame.org", 80, []byte("This is a test"))
+	NetworkWrite("udp", "blog.flame.org", 80, []byte("This is a test"))
 }
