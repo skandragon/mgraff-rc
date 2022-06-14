@@ -102,3 +102,27 @@ func TestCreateFile(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteFile(t *testing.T) {
+	tests := []struct {
+		path        string
+		expectPanic bool
+	}{
+		{"/tmp/foo2", false},
+		{"/DoesnOTeXiST", true},
+	}
+	os.Create("/tmp/foo2") // hack to make sure this exists
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			if tt.expectPanic {
+				assert.Panics(t, func() {
+					DeleteFile(tt.path)
+				})
+			} else {
+				assert.NotPanics(t, func() {
+					DeleteFile(tt.path)
+				})
+			}
+		})
+	}
+}

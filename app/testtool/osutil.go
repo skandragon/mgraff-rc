@@ -66,11 +66,24 @@ func RunCommand(path string, args []string) {
 func CreateFile(path string) {
 	f, err := os.Create(path)
 	if err != nil {
-		zap.S().Panicw("createFile", "error", err)
+		zap.S().Panicw("CreateFile", "error", err)
 	}
 	defer f.Close()
-	zap.S().Infow("createFile",
+	zap.S().Infow("CreateFile",
 		"fileAction", "create",
+		"path", path,
+	)
+}
+
+// DeleteFile will delete the file at the specified path.
+// If an error occurs, it will panic.
+func DeleteFile(path string) {
+	err := os.Remove(path)
+	if err != nil {
+		zap.S().Panicw("DeleteFile", "error", err)
+	}
+	zap.S().Infow("DeleteFile",
+		"fileAction", "delete",
 		"path", path,
 	)
 }
