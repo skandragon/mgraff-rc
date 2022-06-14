@@ -17,22 +17,23 @@
 package main
 
 import (
-	"log"
-
-	"go.uber.org/zap"
+	"os"
+	"testing"
 )
 
-var (
-	logger *zap.SugaredLogger
-)
-
-func main() {
-	l, err := zap.NewProduction()
-	if err != nil {
-		log.Fatalf("setting up zap logger: %v", err)
+func TestCurrentUser(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		// likely to fail on Windows, for for now this will work on Unix-like systems
+		{"returns same as environment", os.Getenv("USER")},
 	}
-	logger = l.Sugar()
-	defer logger.Sync()
-
-	logger.Infof("Working!")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CurrentUser(); got != tt.want {
+				t.Errorf("CurrentUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

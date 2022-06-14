@@ -17,22 +17,15 @@
 package main
 
 import (
-	"log"
-
-	"go.uber.org/zap"
+	"os/user"
 )
 
-var (
-	logger *zap.SugaredLogger
-)
-
-func main() {
-	l, err := zap.NewProduction()
+// CurrentUser returns a string representing the current user running this
+// process, or logs and exits if this cannot be determined.
+func CurrentUser() string {
+	u, err := user.Current()
 	if err != nil {
-		log.Fatalf("setting up zap logger: %v", err)
+		logger.Fatalf("user.Current(): %v", err)
 	}
-	logger = l.Sugar()
-	defer logger.Sync()
-
-	logger.Infof("Working!")
+	return u.Username
 }
