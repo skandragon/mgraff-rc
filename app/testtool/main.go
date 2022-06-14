@@ -23,4 +23,10 @@ func main() {
 	defer l.Sync()
 
 	zap.S().Infow("Working!")
+
+	CreateFile("/tmp/foo")
+	ModifyFile("/tmp/foo", "item one.")
+	ModifyFile("/tmp/foo", "item two.")
+	DeleteFile("/tmp/foo")
+	RunCommand("/bin/ls", []string{"/foo"})
 }
