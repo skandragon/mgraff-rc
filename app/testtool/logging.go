@@ -24,7 +24,7 @@ import (
 )
 
 func setupLogging() *zap.SugaredLogger {
-	l, err := zap.NewProduction()
+	l, err := zap.NewDevelopment()
 	if err != nil {
 		log.Fatalf("setting up zap logger: %v", err)
 	}

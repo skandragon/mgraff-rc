@@ -29,28 +29,48 @@ import (
 func CurrentUser() string {
 	n, err := user.Current()
 	if err != nil {
-		zap.S().Fatalw("user.Current()", "error", err)
+		zap.S().Panicw("user.Current()", "error", err)
 	}
 	return n.Username
 }
 
+// CurrentExecutable retuns the full path of the currently running executable,
+// or panics if it cannot be retrieved from os.Executable()
 func CurrentExecutable() string {
 	n, err := os.Executable()
 	if err != nil {
-		zap.S().Fatalw("os.Executable()", "error", err)
+		zap.S().Panicw("os.Executable()", "error", err)
 	}
 	return n
 }
 
+// RunCommand runs the command with arguments.  If an error occurs running
+// the command, it will panic.
 func RunCommand(path string, args []string) {
 	cmd := exec.Command(path, args...)
 	err := cmd.Run()
 	if err != nil {
-		zap.S().Fatalw("exec", "error", err)
+		zap.S().Panicw("exec", "error", err)
 	}
 	zap.S().Infow("exec",
 		"cmdPath", path,
 		"cmdArgs", args,
 		"cmdPID", cmd.ProcessState.Pid(),
 		"cmdExitStatus", cmd.ProcessState.ExitCode())
+}
+
+// CreateFile will create an empty file using the default umask at
+// the specified path.  All directories need to exist prior to calling.
+// The file is not deleted automatically.
+// If the file cannot be created, it will panic.
+func CreateFile(path string) {
+	f, err := os.Create(path)
+	if err != nil {
+		zap.S().Panicw("createFile", "error", err)
+	}
+	defer f.Close()
+	zap.S().Infow("createFile",
+		"fileAction", "create",
+		"path", path,
+	)
 }

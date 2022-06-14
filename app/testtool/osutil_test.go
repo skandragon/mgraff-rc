@@ -46,21 +46,59 @@ func TestRunCommand(t *testing.T) {
 		args []string
 	}
 	tests := []struct {
-		name string
-		args args
+		name        string
+		args        args
+		expectPanic bool
 	}{
-		{"/bin/ls", args{"/bin/ls", []string{"/"}}},
+		{"/bin/ls", args{"/bin/ls", []string{"/"}}, false},
+		{"/bin/lsxxxxxasda", args{"/bin/lsxxxxxasda", []string{"/"}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			RunCommand(tt.args.path, tt.args.args)
+			if tt.expectPanic {
+				assert.Panics(t, func() {
+					RunCommand(tt.args.path, tt.args.args)
+				})
+			} else {
+				assert.NotPanics(t, func() {
+					RunCommand(tt.args.path, tt.args.args)
+				})
+			}
 		})
 	}
 }
 
 func TestCurrentExecutable(t *testing.T) {
 	t.Run("returns something", func(t *testing.T) {
-		got := CurrentExecutable()
-		assert.NotEmpty(t, got)
+		assert.NotPanics(t, func() {
+			got := CurrentExecutable()
+			assert.NotEmpty(t, got)
+		})
 	})
+}
+
+func TestCreateFile(t *testing.T) {
+	tests := []struct {
+		name        string
+		path        string
+		expectPanic bool
+	}{
+		{"/tmp/foo", "/tmp/foo", false},
+		{"/DoesnOTeXiST", "/DoesnOTeXiST", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.expectPanic {
+				assert.Panics(t, func() {
+					CreateFile(tt.path)
+				})
+			} else {
+				assert.NotPanics(t, func() {
+					CreateFile(tt.path)
+				})
+				assert.FileExists(t, tt.path)
+				assert.NoError(t, os.Remove(tt.path))
+			}
+		})
+	}
 }
