@@ -131,16 +131,17 @@ func TestDeleteFile(t *testing.T) {
 
 func TestModifyFile(t *testing.T) {
 	tests := []struct {
+		name        string
 		path        string
 		mode        fs.FileMode
 		expectPanic bool
 	}{
-		{"/tmp/foo3", 0644, false},
-		{"/DoesnOTeXiST", 0, true},
-		{"/tmp/foo4", 0444, true},
+		{"can write", "/tmp/foo3", 0644, false},
+		{"no such file", "/DoesnOTeXiST", 0, true},
+		{"file not writable", "/tmp/foo4", 0444, true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.path, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			// create test file if needed
 			if tt.mode != 0 {
 				f, err := os.OpenFile(tt.path, os.O_CREATE, tt.mode)
