@@ -106,7 +106,7 @@ func ModifyFile(path string, content string) {
 	if err != nil {
 		zap.S().Panicw("ModifyFile", "error", err)
 	}
-	defer f.Close()
+	defer f.Close() // error is ignored
 	_, err = f.WriteString(content)
 	if err != nil {
 		zap.S().Panicw("ModifyFile", "error", err)
