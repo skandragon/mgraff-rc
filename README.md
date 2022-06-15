@@ -88,7 +88,7 @@ The file will be created with mode 0644.  It will be empty.
 ### Modify File
 
 This will append the provided `content` to the file at `path`.  The file must
-already exist.
+already exist.  The contents are treated as a UTF-8 string.
 
 ```
 // Request
@@ -188,7 +188,8 @@ The exit code will be returned on any successful execution.
 
 Data can be written to any TCP or UDP destination, specified as either an IP
 address or hostname.  If the address is provided, it may be either IPv4 or
-IPv6, but IPv6 addresses must be included in `[]` format:  `[::1]`.  Link-local IPv6 addresses are also supported using the syntax `[fe80::1%lo0]`.
+IPv6, but IPv6 addresses must be included in `[]` format:  `[::1]`.
+Link-local IPv6 addresses are also supported using the syntax `[fe80::1%lo0]`.
 
 If using a DNS name, multiple addresses of both types may be returned.  To
 force a connection using IPv4 or IPv6, "tcp4", "tcp6", "udp4", and "udp6" are
@@ -197,6 +198,8 @@ also supported as a protocol.
 The bytes written indicate only that the data was inserted into the Kernel's
 network stack buffers.  It does not guarantee that the data was successfully
 sent.
+
+The data is treated as a UTF-8 string.
 
 ```
 // Request
