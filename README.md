@@ -34,11 +34,19 @@ it indicates a successful operation.
 If `action` is not set, it is a normal log message and can be ignored for EDR
 activity comparison.
 
+# Supported Operating Systems
+
+This was developed on MacOS, and should run identically on Linux as well.  Windows
+was not tested, and it's possible changes would have to be made there, most likely
+around the process creation.
+
 # Building
 
 ```
 $ make
 ```
+
+This will produce a single binary in `./bin/testwool`.
 
 # Running
 
